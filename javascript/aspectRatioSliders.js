@@ -7,6 +7,7 @@ class AspectRatioSliderController {
         this.widthSlider.childNumField.addEventListener("change", (e) => { e.preventDefault(); this.resize("width"); });
         this.heightSlider.childRangeField.addEventListener("change", (e) => { e.preventDefault(); this.resize("height"); });
         this.heightSlider.childNumField.addEventListener("change", (e) => { e.preventDefault(); this.resize("height"); });
+        this.ratioSource.childSelector.addEventListener("change", (e) => { e.preventDefault(); this.adjustStepSize(); });
     }
     resize(dimension) {
         let val = this.ratioSource.getVal();
@@ -21,6 +22,28 @@ class AspectRatioSliderController {
         else if (dimension == "height") {
             this.widthSlider.setVal(Math.round(parseFloat(this.heightSlider.getVal()) * ratio).toString());
         }
+    }
+    adjustStepSize() {
+        let val = this.ratioSource.getVal();
+        if (!val.includes(":")) {
+            return;
+        }
+        let [width, height] = val.split(":").map(Number);
+        let gcd = this.gcd(width, height);
+        let stepSize = 8 * height / gcd;
+        this.widthSlider.childRangeField.step = stepSize.toString();
+        this.heightSlider.childRangeField.step = stepSize.toString();
+        let currentWidth = parseInt(this.widthSlider.getVal());
+        let stepsTaken = Math.round(currentWidth / stepSize);
+        let newWidth = stepsTaken * stepSize;
+        this.widthSlider.setVal(newWidth.toString());
+        this.heightSlider.setVal(Math.round(newWidth / (width / height)).toString());
+    }
+    gcd(a, b) {
+        if (b === 0) {
+            return a;
+        }
+        return this.gcd(b, a % b);
     }
     static observeStartup(widthSliderId, heightSliderId, ratioSourceId) {
         let observer = new MutationObserver(() => {
