@@ -765,6 +765,12 @@ footer {
    appearance: none;
    background-image: unset;
    padding-right: unset;
+   min-width: 40px;
+   max-width: 40px;
+   min-height: 40px;
+   max-height: 40px;
+   padding: 0;
+   text-align: center;
 }
 
 .inactive{
