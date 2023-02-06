@@ -27,14 +27,18 @@ class AspectRatioSliderController {
         let val = this.ratioSource.getVal();
         if (!val.includes(":")) {
             this.widthSlider.childRangeField.step = "8";
+            this.widthSlider.childNumField.step = "8";
             this.heightSlider.childRangeField.step = "8";
+            this.heightSlider.childNumField.step = "8";
             return;
         }
         let [width, height] = val.split(":").map(Number);
         let gcd = this.gcd(width, height);
         let stepSize = 8 * height / gcd;
         this.widthSlider.childRangeField.step = stepSize.toString();
+        this.widthSlider.childNumField.step = stepSize.toString();
         this.heightSlider.childRangeField.step = stepSize.toString();
+        this.heightSlider.childNumField.step = stepSize.toString();
         let currentWidth = parseInt(this.widthSlider.getVal());
         let stepsTaken = Math.round(currentWidth / stepSize);
         let newWidth = stepsTaken * stepSize;
