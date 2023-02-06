@@ -3,10 +3,10 @@ class AspectRatioSliderController {
         this.widthSlider = new SliderComponentController(widthSlider);
         this.heightSlider = new SliderComponentController(heightSlider);
         this.ratioSource = new DropdownComponentController(ratioSource);
-        this.widthSlider.childRangeField.addEventListener("change", () => this.resize("width"));
-        this.widthSlider.childNumField.addEventListener("change", () => this.resize("width"));
-        this.heightSlider.childRangeField.addEventListener("change", () => this.resize("height"));
-        this.heightSlider.childNumField.addEventListener("change", () => this.resize("height"));
+        this.widthSlider.childRangeField.addEventListener("change", (e) => { e.preventDefault(); this.resize("width"); });
+        this.widthSlider.childNumField.addEventListener("change", (e) => { e.preventDefault(); this.resize("width"); });
+        this.heightSlider.childRangeField.addEventListener("change", (e) => { e.preventDefault(); this.resize("height"); });
+        this.heightSlider.childNumField.addEventListener("change", (e) => { e.preventDefault(); this.resize("height"); });
     }
     resize(dimension) {
         let val = this.ratioSource.getVal();

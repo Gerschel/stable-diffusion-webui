@@ -140,7 +140,7 @@ ui_reorder_categories = [
 ]
 
 aspect_ratio_defaults = [
-    "🔓"
+    "🔓",
     "1:1",
     "1:2",
     "2:1",
