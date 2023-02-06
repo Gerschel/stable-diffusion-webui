@@ -26,6 +26,8 @@ class AspectRatioSliderController {
     adjustStepSize() {
         let val = this.ratioSource.getVal();
         if (!val.includes(":")) {
+            this.widthSlider.childRangeField.step = "8";
+            this.heightSlider.childRangeField.step = "8";
             return;
         }
         let [width, height] = val.split(":").map(Number);
