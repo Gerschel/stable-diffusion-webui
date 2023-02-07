@@ -17,31 +17,42 @@ class AspectRatioSliderController {
         let [width, height] = val.split(":").map(Number);
         let ratio = width / height;
         if (dimension == 'width') {
-            this.heightSlider.setVal(Math.round(parseFloat(this.widthSlider.getVal()) / ratio).toString());
+            this.heightSlider.setVal((parseInt(this.widthSlider.getVal()) / ratio).toString());
         }
         else if (dimension == "height") {
-            this.widthSlider.setVal(Math.round(parseFloat(this.heightSlider.getVal()) * ratio).toString());
+            this.widthSlider.setVal((parseInt(this.heightSlider.getVal()) * ratio).toString());
         }
     }
     adjustStepSize() {
         let val = this.ratioSource.getVal();
         if (!val.includes(":")) {
             this.widthSlider.childRangeField.step = "8";
+            this.widthSlider.childRangeField.min = "64";
             this.widthSlider.childNumField.step = "8";
+            this.widthSlider.childNumField.min = "64";
             this.heightSlider.childRangeField.step = "8";
+            this.heightSlider.childRangeField.min = "64";
             this.heightSlider.childNumField.step = "8";
+            this.heightSlider.childNumField.min = "64";
             return;
         }
         let [width, height] = val.split(":").map(Number);
-        let gcd = this.gcd(width, height);
+        let decimalPlaces = (width.toString().split(".")[1] || []).length;
+        decimalPlaces = decimalPlaces > 6 ? 6 : decimalPlaces;
+        let gcd = this.gcd(width * 10 ** decimalPlaces, height * 10 ** decimalPlaces) / 10 ** decimalPlaces;
         let stepSize = 8 * height / gcd;
-        this.widthSlider.childRangeField.step = stepSize.toString();
-        this.widthSlider.childNumField.step = stepSize.toString();
+        let stepSizeOther = 8 * width / gcd;
+        this.widthSlider.childRangeField.step = stepSizeOther.toString();
+        this.widthSlider.childRangeField.min = stepSizeOther.toString();
+        this.widthSlider.childNumField.step = stepSizeOther.toString();
+        this.widthSlider.childNumField.min = stepSizeOther.toString();
         this.heightSlider.childRangeField.step = stepSize.toString();
+        this.heightSlider.childRangeField.min = stepSize.toString();
         this.heightSlider.childNumField.step = stepSize.toString();
+        this.heightSlider.childNumField.min = stepSize.toString();
         let currentWidth = parseInt(this.widthSlider.getVal());
-        let stepsTaken = Math.round(currentWidth / stepSize);
-        let newWidth = stepsTaken * stepSize;
+        let stepsTaken = Math.round(currentWidth / stepSizeOther);
+        let newWidth = stepsTaken * stepSizeOther;
         this.widthSlider.setVal(newWidth.toString());
         this.heightSlider.setVal(Math.round(newWidth / (width / height)).toString());
     }
