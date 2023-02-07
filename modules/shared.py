@@ -142,14 +142,19 @@ ui_reorder_categories = [
 aspect_ratio_defaults = [
     "🔓",
     "1:1",
-    "1:2",
-    "2:1",
-    "2:3",
     "3:2",
     "4:3",
     "5:4",
-    "9:16",
     "16:9",
+    "9:16",
+    "1.85:1",
+    "2.35:1",
+    "2.39:1",
+    "2.40:1",
+    "21:9",
+    "1.375:1",
+    "1.66:1",
+    "1.75:1"
 ]
 
 cmd_opts.disable_extension_access = (cmd_opts.share or cmd_opts.listen or cmd_opts.server_name) and not cmd_opts.enable_insecure_extension_access
