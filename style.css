@@ -772,6 +772,23 @@ footer {
    padding: 0;
    text-align: center;
 }
+.rounding-badge {
+  display: inline-block;
+  border-radius: 0px;
+  background-color: #ccc;
+  cursor: pointer;
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  min-width: 16px;
+  min-height: 16px;
+}
+
+.rounding-badge.active {
+  background-color: #007bff;
+  border-radius: 50%;
+}
+
 
 .inactive{
     opacity: 0.5;

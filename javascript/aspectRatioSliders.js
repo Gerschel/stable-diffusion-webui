@@ -1,57 +1,42 @@
 class AspectRatioSliderController {
     constructor(widthSlider, heightSlider, ratioSource, roundingSource) {
+        //References
         this.widthSlider = new SliderComponentController(widthSlider);
         this.heightSlider = new SliderComponentController(heightSlider);
         this.ratioSource = new DropdownComponentController(ratioSource);
         this.roundingSource = new CheckboxComponentController(roundingSource);
-        //if (this.roundingSource.getVal()){
-        //    this.ratioSource.childSelector.classList.add("rounding")
-        //}
-        //this.roundingSource.child.addEventListener("change", (event) => {
-        //    if (this.roundingSource.getVal()) {
-        //        this.ratioSource.childSelector.classList.add("rounding");
-        //    } else {
-        //        this.ratioSource.childSelector.classList.remove("rounding");
-        //    }
-        //});
         // Badge implementation
-        //const roundingBadge = document.createElement("div");
-        //roundingBadge.classList.add("rounding-badge");
-        //this.ratioSource.element.appendChild(roundingBadge);
-        //if (this.roundingSource.getVal()) {
-        //    roundingBadge.classList.add("active");
-        //}
-        //roundingBadge.addEventListener("click", () => {
-        //    let boolVal = this.roundingSource.getVal()
-        //    this.roundingSource.setVal(!this.roundingSource.getVal());
-        //    boolVal?roundingBadge.classList.add("active"):roundingBadge.classList.remove("active");
-        //});
-        //this.roundingSource.child.addEventListener("change", () => {
-        //    //roundingBadge.classList.toggle("active");
-        //    let boolVal = this.roundingSource.getVal()
-        //    boolVal?roundingBadge.classList.add("active"):roundingBadge.classList.remove("active");
-        //});
+        this.roundingIndicatorBadge = document.createElement("div");
+        this.roundingIndicatorBadge.innerText = "📐";
+        this.roundingIndicatorBadge.classList.add("rounding-badge");
+        this.ratioSource.element.appendChild(this.roundingIndicatorBadge);
+        if (this.roundingSource.getVal()) {
+            this.roundingIndicatorBadge.classList.add("active");
+            this.roundingIndicatorBadge.innerText = "⚠️";
+        }
+        this.roundingIndicatorBadge.addEventListener("click", () => {
+            this.roundingSource.setVal(!this.roundingSource.getVal());
+        });
+        this.roundingSource.child.addEventListener("change", () => {
+            if (this.roundingSource.getVal()) {
+                this.roundingIndicatorBadge.classList.add("active");
+                this.roundingIndicatorBadge.innerText = "⚠️";
+            }
+            else {
+                this.roundingIndicatorBadge.classList.remove("active");
+                this.roundingIndicatorBadge.innerText = "📐";
+            }
+            this.adjustStepSize();
+        });
+        //Other event listeners
         this.widthSlider.childRangeField.addEventListener("change", (e) => { e.preventDefault(); this.resize("width"); });
         this.widthSlider.childNumField.addEventListener("change", (e) => { e.preventDefault(); this.resize("width"); });
         this.heightSlider.childRangeField.addEventListener("change", (e) => { e.preventDefault(); this.resize("height"); });
         this.heightSlider.childNumField.addEventListener("change", (e) => { e.preventDefault(); this.resize("height"); });
         this.ratioSource.childSelector.addEventListener("change", (e) => { e.preventDefault(); this.adjustStepSize(); });
     }
-    //resize(dimension) {
-    //    let val = this.ratioSource.getVal();
-    //    if (!val.includes(":")) {
-    //        return;
-    //    }
-    //    let [width, height] = val.split(":").map(Number);
-    //    let ratio = width / height;
-    //    if (dimension == 'width') {
-    //        this.heightSlider.setVal((parseInt(this.widthSlider.getVal()) / ratio).toString());
-    //    }
-    //    else if (dimension == "height") {
-    //        this.widthSlider.setVal((parseInt(this.heightSlider.getVal()) * ratio).toString());
-    //    }
-    //}
     resize(dimension) {
+        //For moving slider or number field
         let val = this.ratioSource.getVal();
         if (!val.includes(":")) {
             return;
@@ -73,42 +58,11 @@ class AspectRatioSliderController {
             this.widthSlider.setVal(newWidth.toString());
         }
     }
-    //adjustStepSize() {
-    //    let val = this.ratioSource.getVal();
-    //    if (!val.includes(":")) {
-    //        this.widthSlider.childRangeField.step = "8";
-    //        this.widthSlider.childRangeField.min = "64";
-    //        this.widthSlider.childNumField.step = "8";
-    //        this.widthSlider.childNumField.min = "64";
-    //        this.heightSlider.childRangeField.step = "8";
-    //        this.heightSlider.childRangeField.min = "64";
-    //        this.heightSlider.childNumField.step = "8";
-    //        this.heightSlider.childNumField.min = "64";
-    //        return;
-    //    }
-    //    let [width, height] = val.split(":").map(Number);
-    //    let decimalPlaces = (width.toString().split(".")[1] || []).length;
-    //    decimalPlaces = decimalPlaces > 6 ? 6 : decimalPlaces;
-    //    let gcd = this.gcd(width * 10 ** decimalPlaces, height * 10 ** decimalPlaces) / 10 ** decimalPlaces;
-    //    let stepSize = 8 * height / gcd;
-    //    let stepSizeOther = 8 * width / gcd;
-    //    this.widthSlider.childRangeField.step = stepSizeOther.toString();
-    //    this.widthSlider.childRangeField.min = stepSizeOther.toString();
-    //    this.widthSlider.childNumField.step = stepSizeOther.toString();
-    //    this.widthSlider.childNumField.min = stepSizeOther.toString();
-    //    this.heightSlider.childRangeField.step = stepSize.toString();
-    //    this.heightSlider.childRangeField.min = stepSize.toString();
-    //    this.heightSlider.childNumField.step = stepSize.toString();
-    //    this.heightSlider.childNumField.min = stepSize.toString();
-    //    let currentWidth = parseInt(this.widthSlider.getVal());
-    //    let stepsTaken = Math.round(currentWidth / stepSizeOther);
-    //    let newWidth = stepsTaken * stepSizeOther;
-    //    this.widthSlider.setVal(newWidth.toString());
-    //    this.heightSlider.setVal(Math.round(newWidth / (width / height)).toString());
-    //}
     adjustStepSize() {
+        /* Sets scales/precision/rounding steps;*/
         let val = this.ratioSource.getVal();
         if (!val.includes(":")) {
+            //If ratio unlocked
             this.widthSlider.childRangeField.step = "8";
             this.widthSlider.childRangeField.min = "64";
             this.widthSlider.childNumField.step = "8";
@@ -119,13 +73,17 @@ class AspectRatioSliderController {
             this.heightSlider.childNumField.min = "64";
             return;
         }
+        //Format string and calculate step sizes
         let [width, height] = val.split(":").map(Number);
         let decimalPlaces = (width.toString().split(".")[1] || []).length;
+        //keep upto 6 decimal points of precision of ratio
+        //euclidean gcd does not support floats, so we scale it up 
         decimalPlaces = decimalPlaces > 6 ? 6 : decimalPlaces;
         let gcd = this.gcd(width * 10 ** decimalPlaces, height * 10 ** decimalPlaces) / 10 ** decimalPlaces;
         let stepSize = 8 * height / gcd;
         let stepSizeOther = 8 * width / gcd;
         if (this.roundingSource.getVal()) {
+            //If rounding is on set/keep default stepsizes
             this.widthSlider.childRangeField.step = "8";
             this.widthSlider.childRangeField.min = "64";
             this.widthSlider.childNumField.step = "8";
@@ -136,6 +94,8 @@ class AspectRatioSliderController {
             this.heightSlider.childNumField.min = "64";
         }
         else {
+            //if rounding is off, set step sizes so they enforce snapping
+            //min is changed, because it offsets snap positions
             this.widthSlider.childRangeField.step = stepSizeOther.toString();
             this.widthSlider.childRangeField.min = stepSizeOther.toString();
             this.widthSlider.childNumField.step = stepSizeOther.toString();
@@ -146,12 +106,15 @@ class AspectRatioSliderController {
             this.heightSlider.childNumField.min = stepSize.toString();
         }
         let currentWidth = parseInt(this.widthSlider.getVal());
+        //Rounding treated kinda like pythons divmod
         let stepsTaken = Math.round(currentWidth / stepSizeOther);
+        //this snaps it to closest rule matches (rules being html step points, and ratio)
         let newWidth = stepsTaken * stepSizeOther;
         this.widthSlider.setVal(newWidth.toString());
         this.heightSlider.setVal(Math.round(newWidth / (width / height)).toString());
     }
     gcd(a, b) {
+        //euclidean gcd
         if (b === 0) {
             return a;
         }
@@ -172,6 +135,7 @@ class AspectRatioSliderController {
     }
 }
 document.addEventListener("DOMContentLoaded", () => {
+    //Register mutation observer for self start-up;
     AspectRatioSliderController.observeStartup("txt2img_width", "txt2img_height", "txt2img_ratio", "setting_aspect_ratios_rounding");
     AspectRatioSliderController.observeStartup("img2img_width", "img2img_height", "img2img_ratio", "setting_aspect_ratios_rounding");
 });
