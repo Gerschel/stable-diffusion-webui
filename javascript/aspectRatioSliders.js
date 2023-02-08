@@ -1,10 +1,11 @@
 class AspectRatioSliderController {
-    constructor(widthSlider, heightSlider, ratioSource, roundingSource) {
+    constructor(widthSlider, heightSlider, ratioSource, roundingSource, roundingMethod) {
         //References
         this.widthSlider = new SliderComponentController(widthSlider);
         this.heightSlider = new SliderComponentController(heightSlider);
         this.ratioSource = new DropdownComponentController(ratioSource);
         this.roundingSource = new CheckboxComponentController(roundingSource);
+        this.roundingMethod = new RadioComponentController(roundingMethod)
         // Badge implementation
         this.roundingIndicatorBadge = document.createElement("div");
         this.roundingIndicatorBadge.innerText = "📐";
@@ -46,13 +47,30 @@ class AspectRatioSliderController {
         if (dimension == 'width') {
             let newHeight = parseInt(this.widthSlider.getVal()) / ratio;
             if (this.roundingSource.getVal()) {
-                newHeight = Math.ceil(newHeight / 8) * 8;
+                if (this.roundingMethod.getVal() === "Ceiling"){
+                    newHeight = Math.ceil(newHeight / 8) * 8;
+                }
+                else if (this.roundingMethod.getVal() === "Round"){
+                    newHeight = Math.round(newHeight / 8) * 8;
+                }
+                else if (this.roundingMethod.getVal() === "Floor"){
+                    newHeight = Math.floor(newHeight / 8) * 8;
+                }
             }
             this.heightSlider.setVal(newHeight.toString());
         }
         else if (dimension == "height") {
             let newWidth = parseInt(this.heightSlider.getVal()) * ratio;
             if (this.roundingSource.getVal()) {
+                newWidth = Math.ceil(newWidth / 8) * 8;
+                if (this.roundingMethod.getVal() === "Ceiling"){
+                }
+                else if (this.roundingMethod.getVal() === "Round"){
+                    newWidth = Math.round(newWidth / 8) * 8;
+                }
+                else if (this.roundingMethod.getVal() === "Floor"){
+                    newWidth = Math.floor(newWidth / 8) * 8;
+                }
                 newWidth = Math.ceil(newWidth / 8) * 8;
             }
             this.widthSlider.setVal(newWidth.toString());
@@ -120,15 +138,16 @@ class AspectRatioSliderController {
         }
         return this.gcd(b, a % b);
     }
-    static observeStartup(widthSliderId, heightSliderId, ratioSourceId, roundingSourceId) {
+    static observeStartup(widthSliderId, heightSliderId, ratioSourceId, roundingSourceId, roundingMethodId) {
         let observer = new MutationObserver(() => {
             let widthSlider = document.querySelector("gradio-app").shadowRoot.getElementById(widthSliderId);
             let heightSlider = document.querySelector("gradio-app").shadowRoot.getElementById(heightSliderId);
             let ratioSource = document.querySelector("gradio-app").shadowRoot.getElementById(ratioSourceId);
             let roundingSource = document.querySelector("gradio-app").shadowRoot.getElementById(roundingSourceId);
+            let roundingMethod = document.querySelector("gradio-app").shadowRoot.getElementById(roundingMethodId);
             if (widthSlider && heightSlider && ratioSource && roundingSource) {
                 observer.disconnect();
-                new AspectRatioSliderController(widthSlider, heightSlider, ratioSource, roundingSource);
+                new AspectRatioSliderController(widthSlider, heightSlider, ratioSource, roundingSource, roundingMethod);
             }
         });
         observer.observe(gradioApp(), { childList: true, subtree: true });
@@ -136,6 +155,6 @@ class AspectRatioSliderController {
 }
 document.addEventListener("DOMContentLoaded", () => {
     //Register mutation observer for self start-up;
-    AspectRatioSliderController.observeStartup("txt2img_width", "txt2img_height", "txt2img_ratio", "setting_aspect_ratios_rounding");
-    AspectRatioSliderController.observeStartup("img2img_width", "img2img_height", "img2img_ratio", "setting_aspect_ratios_rounding");
+    AspectRatioSliderController.observeStartup("txt2img_width", "txt2img_height", "txt2img_ratio", "setting_aspect_ratios_rounding", "setting_aspect_ratios_rounding_method");
+    AspectRatioSliderController.observeStartup("img2img_width", "img2img_height", "img2img_ratio", "setting_aspect_ratios_rounding", "setting_aspect_ratios_rounding_method");
 });
