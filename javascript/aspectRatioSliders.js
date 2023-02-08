@@ -47,14 +47,16 @@ class AspectRatioSliderController {
         if (dimension == 'width') {
             let newHeight = parseInt(this.widthSlider.getVal()) / ratio;
             if (this.roundingSource.getVal()) {
-                if (this.roundingMethod.getVal() === "Ceiling"){
-                    newHeight = Math.ceil(newHeight / 8) * 8;
-                }
-                else if (this.roundingMethod.getVal() === "Round"){
-                    newHeight = Math.round(newHeight / 8) * 8;
-                }
-                else if (this.roundingMethod.getVal() === "Floor"){
-                    newHeight = Math.floor(newHeight / 8) * 8;
+                switch (this.roundingMethod.getVal()){
+                    case 'Round':
+                        newHeight = Math.round(newHeight / 8) * 8;
+                        break;
+                    case 'Ceiling':
+                        newHeight = Math.ceil(newHeight / 8) * 8;
+                        break;
+                    case 'Floor':
+                        newHeight = Math.floor(newHeight / 8) * 8;
+                        break;
                 }
             }
             this.heightSlider.setVal(newHeight.toString());
@@ -62,16 +64,17 @@ class AspectRatioSliderController {
         else if (dimension == "height") {
             let newWidth = parseInt(this.heightSlider.getVal()) * ratio;
             if (this.roundingSource.getVal()) {
-                newWidth = Math.ceil(newWidth / 8) * 8;
-                if (this.roundingMethod.getVal() === "Ceiling"){
+                switch (this.roundingMethod.getVal()){
+                    case 'Round':
+                        newWidth = Math.round(newWidth / 8) * 8;
+                        break;
+                    case 'Ceiling':
+                        newWidth = Math.ceil(newWidth / 8) * 8;
+                        break;
+                    case 'Floor':
+                        newWidth = Math.floor(newWidth / 8) * 8;
+                        break;
                 }
-                else if (this.roundingMethod.getVal() === "Round"){
-                    newWidth = Math.round(newWidth / 8) * 8;
-                }
-                else if (this.roundingMethod.getVal() === "Floor"){
-                    newWidth = Math.floor(newWidth / 8) * 8;
-                }
-                newWidth = Math.ceil(newWidth / 8) * 8;
             }
             this.widthSlider.setVal(newWidth.toString());
         }
